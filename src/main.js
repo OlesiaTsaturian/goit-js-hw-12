@@ -8,7 +8,7 @@ import {
   showLoadMoreButton,
   hideLoadMoreButton,
 } from './js/render-functions';
-import { getImagesByQuery } from './js/pixabay-api';
+import { PER_PAGE, getImagesByQuery } from './js/pixabay-api';
 
 const refs = {
   form: document.querySelector('.form'),
@@ -39,10 +39,12 @@ const onSearchFormSubmit = async event => {
   currentPage = 1;
 
   showLoader();
-
-  const { hits, totalHits } = await getImagesByQuery(currentQuery, currentPage);
-
   try {
+    const { hits, totalHits } = await getImagesByQuery(
+      currentQuery,
+      currentPage
+    );
+
     if (hits.length === 0) {
       clearGallery();
       iziToast.error({
@@ -55,7 +57,17 @@ const onSearchFormSubmit = async event => {
     }
     clearGallery();
     createGallery(hits);
-    showLoadMoreButton();
+
+    if (currentPage * PER_PAGE >= totalHits) {
+      hideLoadMoreButton();
+      iziToast.info({
+        message: "Were sorry, but you've reached the end of search results",
+        position: 'topRight',
+      });
+    } else {
+      showLoadMoreButton();
+    }
+    // showLoadMoreButton();
   } catch (err) {
     console.log(err);
   } finally {
@@ -73,17 +85,24 @@ const onLoadBtnClick = async () => {
       currentQuery,
       currentPage
     );
+
+    if (hits.length === 0) {
+      hideLoadMoreButton();
+      return;
+    }
     createGallery(hits);
 
-    if (currentPage * 15 >= totalHits) {
-      iziToast.error({
+    if (currentPage * PER_PAGE >= totalHits) {
+      iziToast.info({
         message: "Were sorry, but you've reached the end of search results",
         position: 'topRight',
       });
       hideLoadMoreButton();
+    } else {
+      showLoadMoreButton();
     }
-    const firstCard = refs.searchGallery.firstElementChild;
-    const cardRect = firstCard.getBoundingClientRect();
+    const сard = refs.searchGallery.firstElementChild;
+    const cardRect = сard.getBoundingClientRect();
     const cardHeight = cardRect.height;
 
     window.scrollBy({
