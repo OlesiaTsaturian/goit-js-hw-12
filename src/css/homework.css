@@ -167,15 +167,29 @@ button:focus {
 
 .img-info-list {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 10px;
 }
 .img-info-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
   font-size: 15px;
 }
 .img-item-desc {
   font-weight: 500;
+}
+.load-btn.is-hidden {
+  display: none;
+}
+
+.load-btn {
+  padding: 8px 16px;
+  width: 125px;
+  height: 40px;
+  display: block;
+  margin: auto;
+  margin-top: 32px;
+  margin-bottom: 44px;
 }
